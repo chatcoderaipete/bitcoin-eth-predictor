@@ -1,0 +1,36 @@
+mport requests
+import time
+import sys
+
+
+def get_crypto_prices():
+    url = 'https://api.coingecko.com/api/v3/simple/price'
+    parameters = {
+        'ids': 'bitcoin,ethereum',
+        'vs_currencies': 'usd',
+    }
+
+    try:
+        response = requests.get(url, params=parameters)
+        data = response.json()
+        bitcoin_price = data['bitcoin']['usd']
+        ethereum_price = data['ethereum']['usd']
+
+        sys.stdout.write(f"\rBitcoin Price: ${bitcoin_price}    Ethereum Price: ${ethereum_price}    ")
+        sys.stdout.flush()
+    except Exception as e:
+        sys.stdout.write(f"\rError fetching data: {e}    ")
+        sys.stdout.flush()
+
+
+def display_prices_continuously(interval=10):
+    try:
+        while True:
+            get_crypto_prices()
+            time.sleep(interval)
+    except KeyboardInterrupt:
+        print("\nStopped.")
+
+
+# Call the function to start displaying prices, updating every 60 seconds
+display_prices_continuously()
